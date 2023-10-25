@@ -1,10 +1,11 @@
 import ButtonIlPropsInterface from "@/interfaces/Atoms/ButtonIlInterface";
 import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import TextIL from "./TextIL";
 
 export default function ButtonIL(props: ButtonIlPropsInterface) {
   return (
     <TouchableOpacity onPress={props.onPressCallback} style={styles.button}>
-      <Text style={styles.buttonText}>{props.text}</Text>
+      <TextIL text={props.text}></TextIL>
     </TouchableOpacity>
   );
 }
@@ -17,10 +18,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 10,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
   },
 })

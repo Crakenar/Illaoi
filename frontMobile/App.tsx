@@ -6,6 +6,7 @@ import HomeScreen from "./src/pages/HomeScreen";
 import TourScreen from "./src/pages/TourScreen";
 import AddressScreen from "./src/pages/AddressScreen";
 import LoginScreen from "./src/pages/LoginScreen";
+import DataListScreen from "./src/pages/DataListScreen";
 const Stack = createNativeStackNavigator();
 // options={{ headerBackVisible:false }}
 
@@ -17,6 +18,7 @@ export default function App() {
         <Stack.Screen  name="Home" component={HomeScreen} />
         <Stack.Screen name="Adresses" component={AddressScreen} />
         <Stack.Screen name="Tournees" component={TourScreen} />
+        <Stack.Screen name="DataList" component={DataListScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

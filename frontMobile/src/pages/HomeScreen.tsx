@@ -1,24 +1,82 @@
-import { View, Text, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
+import React from "react";
+import CardIL from "../components/Molecules/CardIL";
+import ButtonContainerIL from "../components/Molecules/ButtonContainerIL";
+import ButtonIL from "../components/Atoms/ButtonIL";
+import MenuInterface from "@/interfaces/MenuInterface";
+import { MenuIds } from "../enums/GlobalEnums";
 
-export default function HomeScreen({ navigation } : any) {
+export default function HomeScreen({ navigation }: any) {
+  const DATA: MenuInterface[] = [
+    {
+      id: MenuIds.Tour,
+      title: "Voir mes tournees",
+      redirectLink: "DataList",
+    },
+    {
+      id: MenuIds.Adresses,
+      title: "Voir mes adresses",
+      redirectLink: "DataList",
+    },
+    {
+      id: MenuIds.Package,
+      title: "Voir mes colis",
+      redirectLink: "DataList",
+    },
+  ];
+
   return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Adresses')}
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={DATA}
+        renderItem={({ item }) => (
+          // <CardIL style={styles.item} title={item.title} />
+          <ButtonIL text={item.title} onPressCallback={() => navigation.navigate(item.redirectLink, {menuId: item.id})}></ButtonIL>
+        )}
+        keyExtractor={(item) => item.id.toString()}
       />
       <StatusBar style="auto" />
-    </View>
+      {/* <ButtonContainerIL>
+        <ButtonIL text="Voir mes tournees" onPressCallback={() => {}}></ButtonIL>
+      </ButtonContainerIL> */}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  // container: {
+  //   marginTop: 20,
+  //   marginBottom: 20,
+  //   flex: 1,
+  //   backgroundColor: "#fff",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   flexDirection: "column",
+  //   // flexWrap: 'wrap',
+  //   // alignItems: 'flex-start',
+  // },
+  // item: {
+  //   width: "100%",
+  //   height: 150,
+  //   margin: 5,
+  //   backgroundColor: "rgba(0,0,0, 0.3)",
+  // },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignContent: "center",
+    marginTop: 0,
+  },
+  item: {},
+  title: {
+    fontSize: 32,
   },
 });

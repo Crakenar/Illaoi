@@ -1,14 +1,21 @@
 import { TableNamesEnum } from "../enums/DatabaseEnums";
 import { MenuIds } from "../enums/GlobalEnums";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { supabase } from "../lib/supabase";
 
 export async function _retrieveData(menuId: MenuIds) {
+  const { data } = await supabase.auth.refreshSession();
+  const { user } = data;
   try {
     const tableName = getTableNameFromMenuId(menuId);
-    const value = await AsyncStorage.getItem(tableName);
-    // Our data is fetched successfully
-    console.log(value);
-    return value != null ? JSON.parse(value) : [];
+    let { data: dataList, error } = await supabase
+      .from(tableName)
+      .select()
+      .eq("user_id", user?.id); //not needed bc of the rules in the supabase db but we never know
+    if (error) {
+      console.error(error);
+    }
+    
+    return dataList ?? [];
   } catch (error) {
     // Error retrieving data
   }
@@ -17,19 +24,8 @@ export async function _retrieveData(menuId: MenuIds) {
 export async function _storeData(menuId: MenuIds, data: any) {
   try {
     const tableName = getTableNameFromMenuId(menuId);
-    let res = await _retrieveData(menuId);
-    console.log(res.length);
-    
-    if (res.length > 0) {
-      res.push(...data);
-    } else {
-      res = data;
-    }
-    await AsyncStorage.setItem(tableName, JSON.stringify(res));
-    return true;
   } catch (error) {
     // Error storing data
-    console.error(error);
   }
 }
 

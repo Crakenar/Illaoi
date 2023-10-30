@@ -1,17 +1,18 @@
 import { _retrieveData, getTableNameFromMenuId } from "../services/DatabaseService";
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet} from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet, SafeAreaView, FlatList, StatusBar} from "react-native";
 import ButtonIL from "../components/Atoms/ButtonIL";
+import TextIL from "../components/Atoms/TextIL";
 
 export default function DataListScreen({ route, navigation }: any) {
   const { menuId } = route.params;
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
 
   const fetchData = async () => {
     try {
-      const responseJson = await _retrieveData(menuId);
-      setData(responseJson);
+      const dataList = await _retrieveData(menuId);
+      setData(dataList);      
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,9 +37,13 @@ export default function DataListScreen({ route, navigation }: any) {
       );
     }
     return (
-      <View>
-        <Text>DataListScreen {menuId}</Text>
-      </View>
+      <SafeAreaView style={styles.containerList}>
+      <FlatList
+        data={data}
+        renderItem={({item}) => <TextIL text={item.label} style={styles.title}/>}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
     );
   }
 
@@ -54,5 +59,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
+  containerList: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  item: {
+    backgroundColor: 'green',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    color: 'black',
+  },
 });

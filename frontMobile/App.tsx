@@ -15,8 +15,8 @@ import DataListScreen from "./src/pages/DataListScreen";
 import BottomNavigator from "./src/components/Organism/BottomNavigator";
 import AddingFormScreen from "./src/pages/AddingFormScreen";
 import ButtonIL from "./src/components/Atoms/ButtonIL";
-
 const Stack = createNativeStackNavigator();
+
 // options={{ headerBackVisible:false }}
 
 export default function App() {

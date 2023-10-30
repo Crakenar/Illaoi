@@ -34,6 +34,7 @@ export default function HomeScreen({ navigation }: any) {
   ];
 
   return (
+
     <SafeAreaView style={styles.container}>
       <FlatList
         data={DATA}
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
   //   margin: 5,
   //   backgroundColor: "rgba(0,0,0, 0.3)",
   // },
+  //yi
   container: {
     flex: 1,
     justifyContent: "center",
@@ -79,4 +81,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
+  // container: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // buttonContainer: {
+  //   flex: 1,
+  //   width: '100%',
+  // },
+  // button: {
+  //   backgroundColor: 'blue', // Couleur du bouton
+  //   width: '50%', // Largeur de 100% de l'écran
+  //   height: '50%', // Hauteur de 100% de l'écran
+  // },
+  // buttonText: {
+  //   fontSize: 20,
+  // },
 });

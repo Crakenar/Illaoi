@@ -2,7 +2,14 @@ import { StyleSheet, TextInput } from "react-native";
 
 import TextInputPropsInterface from "@/interfaces/Atoms/TextInputIlInterface";
 export default function TextInputIL(props: TextInputPropsInterface) {
-  return <TextInput secureTextEntry={props.isSecret}  placeholder={props.placeholder} style={styles.input} />;
+  return (
+    <TextInput
+      onChangeText={props.onChangeTextCallback}
+      secureTextEntry={props.isSecret}
+      placeholder={props.placeholder}
+      style={styles.input}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

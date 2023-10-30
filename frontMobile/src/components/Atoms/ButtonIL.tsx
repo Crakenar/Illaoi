@@ -4,7 +4,7 @@ import TextIL from "./TextIL";
 
 export default function ButtonIL(props: ButtonIlPropsInterface) {
   return (
-    <TouchableOpacity onPress={props.onPressCallback} style={styles.button}>
+    <TouchableOpacity onPress={props.onPressCallback} style={[styles.button, props.style]}>
       <TextIL text={props.text}></TextIL>
     </TouchableOpacity>
   );

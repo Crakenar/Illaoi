@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { KeyboardAvoidingView, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Alert} from "react-native";
 
+import {supabase} from '../../lib/supabase';
+//components
 import ButtonIL from "../Atoms/ButtonIL";
 import TextInputIL from "../Atoms/TextInputIL";
 import ButtonContainerIL from "../Molecules/ButtonContainerIL";
@@ -11,16 +13,37 @@ import TextInputContainerIL from "../Molecules/TextInputContainerIL";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const handleSignUp = () => {
-    console.log("Sign Up");
-    navigation.navigate("SignUp");
+  const handleSignUp = async () => {
+    setLoading(true)
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    })
+
+    if (error) Alert.alert(error.message)
+    if (!session) Alert.alert('Please check your inbox for email verification!')
+    setLoading(false)
   };
 
-  const handleLogin = () => {
-    console.log("Login");
-    navigation.navigate("Home");
+  async function handleLogin () {
+    setLoading(true)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) { 
+      Alert.alert(error.message)
+    } else { 
+      navigation.navigate("Home");
+    }
+    setLoading(false)
   };
 
   return (

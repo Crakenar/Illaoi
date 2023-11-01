@@ -15,6 +15,7 @@ import DataListScreen from "./src/pages/DataListScreen";
 import BottomNavigator from "./src/components/Organism/BottomNavigator";
 import AddingFormScreen from "./src/pages/AddingFormScreen";
 import ButtonIL from "./src/components/Atoms/ButtonIL";
+import RegisterScreen from "./src/pages/RegisterScreen";
 const Stack = createNativeStackNavigator();
 
 // options={{ headerBackVisible:false }}
@@ -58,6 +59,7 @@ export default function App() {
         ) : (
           <>
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
           </>
         )}
       </Stack.Navigator>

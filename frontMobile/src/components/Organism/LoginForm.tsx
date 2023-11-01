@@ -17,18 +17,7 @@ export default function LoginForm() {
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const handleSignUp = async () => {
-    setLoading(true)
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    })
-
-    if (error) Alert.alert(error.message)
-    if (!session) Alert.alert('Please check your inbox for email verification!')
-    setLoading(false)
+    navigation.navigate("Register");
   };
 
   async function handleLogin () {

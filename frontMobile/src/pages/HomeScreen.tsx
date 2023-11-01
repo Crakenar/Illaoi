@@ -1,20 +1,19 @@
 import {
-  View,
-  Text,
-  Button,
   StyleSheet,
   FlatList,
   SafeAreaView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import CardIL from "../components/Molecules/CardIL";
-import ButtonContainerIL from "../components/Molecules/ButtonContainerIL";
 import ButtonIL from "../components/Atoms/ButtonIL";
 import MenuInterface from "@/interfaces/MenuInterface";
 import { MenuIds } from "../enums/GlobalEnums";
+import { useDispatch } from "react-redux";
+import { setMenuId } from "../redux/storeSlice";
 
 export default function HomeScreen({ navigation }: any) {
+  const dispatch = useDispatch();
+
   const DATA: MenuInterface[] = [
     {
       id: MenuIds.Tour,
@@ -33,6 +32,10 @@ export default function HomeScreen({ navigation }: any) {
     },
   ];
 
+  function navigateToDataList(item: MenuInterface) {
+    dispatch(setMenuId(item.id));
+    navigation.navigate(item.redirectLink, {menuId: item.id})
+  }
   return (
 
     <SafeAreaView style={styles.container}>
@@ -40,7 +43,7 @@ export default function HomeScreen({ navigation }: any) {
         data={DATA}
         renderItem={({ item }) => (
           // <CardIL style={styles.item} title={item.title} />
-          <ButtonIL text={item.title} onPressCallback={() => navigation.navigate(item.redirectLink, {menuId: item.id})}></ButtonIL>
+          <ButtonIL text={item.title} onPressCallback={() => navigateToDataList(item)}></ButtonIL>
         )}
         keyExtractor={(item) => item.id.toString()}
       />

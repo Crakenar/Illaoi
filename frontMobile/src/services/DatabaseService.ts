@@ -24,7 +24,15 @@ export async function _retrieveData(menuId: MenuIds) {
 export async function _storeData(menuId: MenuIds, data: any) {
   try {
     const tableName = getTableNameFromMenuId(menuId);
+    const { error } = await supabase.from(tableName).insert(data);
+    if (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
   } catch (error) {
+    console.error(error);
+    return false;
     // Error storing data
   }
 }

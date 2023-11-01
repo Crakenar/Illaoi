@@ -1,8 +1,10 @@
-import { _retrieveData, getTableNameFromMenuId } from "../services/DatabaseService";
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { _retrieveData, getTableNameFromMenuId } from "../services/DatabaseService";
 import { View, Text, ActivityIndicator, StyleSheet, SafeAreaView, FlatList, StatusBar} from "react-native";
 import ButtonIL from "../components/Atoms/ButtonIL";
 import TextIL from "../components/Atoms/TextIL";
+import { setMenuId } from "../redux/storeSlice";
 
 export default function DataListScreen({ route, navigation }: any) {
   const { menuId } = route.params;

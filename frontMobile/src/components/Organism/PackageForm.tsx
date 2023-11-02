@@ -1,26 +1,39 @@
 import { View } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 //Services
-import { _storeData } from "../../services/DatabaseService";
+import { _storeData, _updateData } from "../../services/DatabaseService";
 //Components
 import TextInputIL from "../Atoms/TextInputIL";
 import ButtonIL from "../Atoms/ButtonIL";
 //Enums
-import { MenuIds } from "../../enums/GlobalEnums";
+import { ActionTypeId, MenuIds } from "../../enums/GlobalEnums";
 export default function PackageForm({ route, navigation, item }: any) {
+  //States
   const [label, setLabel] = useState<string>("");
   const [editable, setEditable] = useState<boolean>(true);
+  const actionTypeId = useSelector((state: any) => {
+    return state.store.actionTypeId;
+  });
   //onmounted
   useEffect(() => {
-    if (item) {
+    if (actionTypeId !== ActionTypeId.ADD) {
       setLabel(item.label);
-      setEditable(false);
+    }
+    if (actionTypeId === ActionTypeId.DETAILS) {
+      setEditable(true);
     }
   }, [])
 
-  const handleSubmit = () => {
-    const resStore = _storeData(MenuIds.Package, { label: label });
+  const handleSubmit = async () => {
+    if (actionTypeId === ActionTypeId.ADD) {
+      const resStore = await _storeData(MenuIds.Package, { label: label });
+      navigation.navigate("DataList", { menuId: MenuIds.Package });
+    } else if (actionTypeId === ActionTypeId.EDIT) {
+      const resStore = await _updateData(MenuIds.Package, { label: label, id: item.id });
+      navigation.navigate("DataList", { menuId: MenuIds.Package });
+    }
     navigation.navigate("DataList", { menuId: MenuIds.Package });
   };
 

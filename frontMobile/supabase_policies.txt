@@ -35,6 +35,24 @@ WITH CHECK (true);
 
 //Update policies
 
+CREATE POLICY "Individuals can update their packages"
+ON public.packages
+FOR UPDATE 
+TO authenticated 
+using (auth.uid() = user_id);
+
+CREATE POLICY "Individuals can update their adresses"
+ON public.adresses
+FOR UPDATE 
+TO authenticated 
+using (auth.uid() = user_id);
+
+CREATE POLICY "Individuals can update their tours"
+ON public.tours
+FOR UPDATE 
+TO authenticated 
+using (auth.uid() = user_id);
+
 //Delete policies
 
 CREATE POLICY "Individuals can delete their packages"

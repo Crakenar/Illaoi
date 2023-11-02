@@ -30,6 +30,11 @@ export default function DataListItem(props: any) {
     props.navigation.navigate("AddingForm", { item: props.item });
   };
 
+  const goToEdit = () => {
+    dispatch(setActionTypeId(ActionTypeId.EDIT));
+    props.navigation.navigate("AddingForm", { item: props.item });
+  }
+
   return (
     <View style={styles.listItem}>
       <TouchableOpacity
@@ -57,6 +62,7 @@ export default function DataListItem(props: any) {
         }}
       >
         <FontAwesome
+        onPress={goToEdit}
           name="pencil-square"
           size={24}
           color="black"

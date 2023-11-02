@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
+import { Entypo } from '@expo/vector-icons'; 
+
 //Libraries
 import { supabase } from "../../lib/supabase";
 //Components
@@ -68,11 +70,7 @@ export default function AppComponent() {
               component={HomeScreen}
               options={{
                 headerRight: () => (
-                  <ButtonIL
-                    onPressCallback={disconnect}
-                    text="Info"
-                    style={{ width: 30, height: 30, backgroundColor: "red" }}
-                  />
+                  <Entypo onPress={disconnect} name="log-out" size={24} color="black" />
                 ),
               }}
             />
@@ -84,14 +82,7 @@ export default function AppComponent() {
               options={({ navigation }) => ({
                 title: 'Liste : ' + renderingTitleForm(),
                 headerRight: () => (
-                  <ButtonIL
-                    onPressCallback={() => redirectToForm(navigation)}
-                    text={menuId}
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  />
+                  <Entypo onPress={() => redirectToForm(navigation)}name="add-to-list" size={24} color="black" />
                 ),
               })}
             />

@@ -37,6 +37,22 @@ export async function _storeData(menuId: MenuIds, data: any) {
   }
 }
 
+export async function _deleteData(menuId: MenuIds, data: any) {
+  try {
+    const tableName = getTableNameFromMenuId(menuId);
+    const { error } = await supabase.from(tableName).delete().match({"id": data.id});
+    if (error) {
+      console.error(error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+    // Error storing data
+  }
+}
+
 export function getTableNameFromMenuId(menuId: MenuIds): string {
   switch (menuId) {
     case MenuIds.Package:

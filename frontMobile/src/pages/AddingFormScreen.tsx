@@ -1,35 +1,36 @@
-import { View, Text, TextInput } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useSelector } from "react-redux";
+
+//Services
+import { _storeData } from "../services/DatabaseService";
+//Components
 import ButtonIL from "../components/Atoms/ButtonIL";
 import TextInputIl from "../components/Atoms/TextInputIL";
-import { _storeData } from "../services/DatabaseService";
+import PackageForm from "../components/Organism/PackageForm";
+import AdressesForm from "../components/Organism/AdressesForm";
+import TourForm from "../components/Organism/TourForm";
+//Enums
+import { MenuIds } from "../enums/GlobalEnums";
+import { View } from "react-native";
 
 export default function AddingFormScreen({ route, navigation }: any) {
-  const { menuId } = route.params;
-  const [label, setLabel] = useState("");
-  const [number, setNumber] = useState("");
+  
+  const menuId = useSelector((state: any) => {
+    return state.store.menuId;
+  });
 
-  const handleSubmit = () => {
-    console.log("Label:", label);
-    console.log("Number:", number);
-    const resStore = _storeData(menuId, { label: label, number: number });
-    navigation.navigate("DataList", { menuId: menuId });
-  };
+  function renderingForm() {
+    if (menuId === MenuIds.Package) {
+      return <PackageForm navigation={navigation}/>;
+    } else if (menuId === MenuIds.Adresses) {
+      return <AdressesForm navigation={navigation} />;
+    } else if (menuId === MenuIds.Tour) {
+      return <TourForm navigation={navigation} />;
+    }
+  }
+
   return (
     <View>
-      <TextInputIl
-        placeholder="Enter label"
-        value={label}
-        onChangeTextCallback={(text) => setLabel(text)}
-      />
-
-      <TextInputIl
-        placeholder="Enter number"
-        value={number}
-        onChangeTextCallback={(text) => setNumber(text)}
-      />
-      <ButtonIL text="Submit" onPressCallback={handleSubmit} />
+        {renderingForm()}
     </View>
   );
 }

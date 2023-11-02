@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { _retrieveData, getTableNameFromMenuId } from "../services/DatabaseService";
 import { View, Text, ActivityIndicator, StyleSheet, SafeAreaView, FlatList, StatusBar} from "react-native";
+import React, { useEffect, useState } from "react";
+import { useIsFocused } from '@react-navigation/native';
+
+import { _retrieveData, getTableNameFromMenuId } from "../services/DatabaseService";
+
+//Components
 import ButtonIL from "../components/Atoms/ButtonIL";
 import TextIL from "../components/Atoms/TextIL";
-import { setMenuId } from "../redux/storeSlice";
 
 export default function DataListScreen({ route, navigation }: any) {
+  const isFocused = useIsFocused();
+
   const { menuId } = route.params;
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
 
   const fetchData = async () => {
-    try {
+    try {      
       const dataList = await _retrieveData(menuId);
       setData(dataList);      
     } catch (error) {
@@ -23,8 +27,10 @@ export default function DataListScreen({ route, navigation }: any) {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isFocused) {      
+      fetchData();
+    }
+  }, [isFocused]);
 
   function renderDataList() {
     if (data.length === 0) {

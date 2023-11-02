@@ -1,0 +1,38 @@
+//Create 
+create policy "Individuals can view their own packages."
+on packages for select
+using ( auth.uid() = user_id );
+
+create policy "Individuals can view their own adresses."
+on adresses for select
+using ( auth.uid() = user_id );
+
+
+create policy "Individuals can view their own tours."
+on tours for select
+using ( auth.uid() = user_id );
+
+
+//Insert might need to use roles later on
+
+CREATE POLICY "Individuals can insert new adresses"
+ON public.adresses
+FOR INSERT 
+TO authenticated 
+WITH CHECK (true);
+
+CREATE POLICY "Individuals can insert new packages"
+ON public.packages
+FOR INSERT 
+TO authenticated 
+WITH CHECK (true);
+
+CREATE POLICY "Individuals can insert new tours"
+ON public.tours
+FOR INSERT 
+TO authenticated 
+WITH CHECK (true);
+
+//Update policies
+
+//Delete policies

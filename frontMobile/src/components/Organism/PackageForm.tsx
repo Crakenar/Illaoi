@@ -1,33 +1,44 @@
 import { View } from "react-native";
-import { useState } from "react";
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
 
 //Services
 import { _storeData } from "../../services/DatabaseService";
-//Components 
+//Components
 import TextInputIL from "../Atoms/TextInputIL";
 import ButtonIL from "../Atoms/ButtonIL";
 //Enums
 import { MenuIds } from "../../enums/GlobalEnums";
-export default function PackageForm({ route, navigation }: any) {
+export default function PackageForm({ route, navigation, item }: any) {
+  const [label, setLabel] = useState<string>("");
+  const [editable, setEditable] = useState<boolean>(true);
+  //onmounted
+  useEffect(() => {
+    if (item) {
+      setLabel(item.label);
+      setEditable(false);
+    }
+  }, [])
 
-  const [label, setLabel] = useState("");
-  // const navigation = useNavigation();
-  
   const handleSubmit = () => {
-    console.log("Label:", label);
     const resStore = _storeData(MenuIds.Package, { label: label });
     navigation.navigate("DataList", { menuId: MenuIds.Package });
   };
-  
+
+  const renderSubmitButton = () => {
+    if (editable) {
+      return <ButtonIL text="Submit" onPressCallback={handleSubmit} disabled={!editable} />;
+    }
+  }
+
   return (
-          <View>
+    <View>
       <TextInputIL
         placeholder="Enter label"
         value={label}
+        editable={editable}
         onChangeTextCallback={(text) => setLabel(text)}
       />
-      <ButtonIL text="Submit" onPressCallback={handleSubmit} />
+      {renderSubmitButton()}
     </View>
   );
 }

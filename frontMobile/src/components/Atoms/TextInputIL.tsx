@@ -4,10 +4,12 @@ import TextInputPropsInterface from "@/interfaces/Atoms/TextInputIlInterface";
 export default function TextInputIL(props: TextInputPropsInterface) {
   return (
     <TextInput
+      value={props.value}
       onChangeText={props.onChangeTextCallback}
       secureTextEntry={props.isSecret}
       placeholder={props.placeholder}
       style={styles.input}
+      editable={props.editable}
     />
   );
 }

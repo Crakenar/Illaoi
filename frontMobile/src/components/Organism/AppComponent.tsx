@@ -1,16 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from "@expo/vector-icons";
 
 //Libraries
 import { supabase } from "../../lib/supabase";
 //Components
 import HomeScreen from "../../pages/HomeScreen";
-import TourScreen from "../../pages/TourScreen";
-import AddressScreen from "../../pages/AddressScreen";
 import LoginScreen from "../../pages/LoginScreen";
 import DataListScreen from "../../pages/DataListScreen";
 import AddingFormScreen from "../../pages/AddingFormScreen";
@@ -19,13 +17,19 @@ import RegisterScreen from "../../pages/RegisterScreen";
 
 //Store
 import { MenuIds } from "../../enums/GlobalEnums";
+import { setActionType } from "../../redux/storeSlice";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppComponent() {
+  const dispatch = useDispatch();
   const [session, setSession] = useState<Session | null>(null);
   const menuId = useSelector((state: any) => {
     return state.store.menuId;
+  });
+
+  const actionType = useSelector((state: any) => {
+    return state.store.actionType;
   });
 
   useEffect(() => {
@@ -44,12 +48,11 @@ export default function AppComponent() {
   };
   const redirectToForm = function (navigation: any) {
     if (session?.user && menuId) {
-      console.log("menuId", menuId);
-      navigation.navigate("AddingForm")
+      dispatch(setActionType("ADD"));
+      navigation.navigate("AddingForm");
     }
   };
 
-  
   const renderingTitleForm = () => {
     if (menuId === MenuIds.Package) {
       return "Package";
@@ -58,7 +61,11 @@ export default function AppComponent() {
     } else if (menuId === MenuIds.Tour) {
       return "Tour";
     }
-  }
+  };
+
+  const renderingActionType = () => {
+    return actionType;
+  };
 
   return (
     <NavigationContainer>
@@ -70,23 +77,37 @@ export default function AppComponent() {
               component={HomeScreen}
               options={{
                 headerRight: () => (
-                  <Entypo onPress={disconnect} name="log-out" size={24} color="black" />
+                  <Entypo
+                    onPress={disconnect}
+                    name="log-out"
+                    size={24}
+                    color="black"
+                  />
                 ),
               }}
             />
-            <Stack.Screen name="Adresses" component={AddressScreen} />
-            <Stack.Screen name="Tournees" component={TourScreen} />
             <Stack.Screen
               name="DataList"
               component={DataListScreen}
               options={({ navigation }) => ({
-                title: 'Liste : ' + renderingTitleForm(),
+                title: "Liste : " + renderingTitleForm(),
                 headerRight: () => (
-                  <Entypo onPress={() => redirectToForm(navigation)}name="add-to-list" size={24} color="black" />
+                  <Entypo
+                    onPress={() => redirectToForm(navigation)}
+                    name="add-to-list"
+                    size={24}
+                    color="black"
+                  />
                 ),
               })}
             />
-            <Stack.Screen name="AddingForm" component={AddingFormScreen} options={{ title: 'Ajout : ' + renderingTitleForm() }} />
+            <Stack.Screen
+              name="AddingForm"
+              component={AddingFormScreen}
+              options={{
+                title: renderingActionType() + " : " + renderingTitleForm(),
+              }}
+            />
           </>
         ) : (
           <>

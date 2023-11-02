@@ -22,6 +22,7 @@ import {
 //Components
 import ButtonIL from "../components/Atoms/ButtonIL";
 import TextIL from "../components/Atoms/TextIL";
+import DataListItem from "../components/Organism/DataListItem";
 
 export default function DataListScreen({ route, navigation }: any) {
   const isFocused = useIsFocused();
@@ -47,41 +48,6 @@ export default function DataListScreen({ route, navigation }: any) {
     }
   }, [isFocused]);
 
-  function Item({ item } : any) {
-    return (
-      <View style={styles.listItem}>
-        <Entypo name="eye" size={24} color="black" />
-        <View style={{ alignItems: "center", flex: 1 }}>
-          <Text style={{ fontWeight: "bold" }}>{item.label}</Text>
-          <Text>{item.position}</Text>
-        </View>
-        <TouchableOpacity
-          style={{
-            height: 50,
-            width: 50,
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
-          <FontAwesome  name="pencil-square" size={24} color="black" style={{ marginRight: 10 }} />
-          <Ionicons onPress={() => deleteData(item)} name="trash-bin" size={24} color="red" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const deleteData = async (item: any) => {
-    console.log("deleteData", item);
-    
-    const res = await _deleteData(menuId, { id: item.id });
-    if (!res) {
-      Alert.alert("Error", "Failed to delete data");
-    } else {
-      fetchData();
-    }
-  }
-
   function renderDataList() {
     if (data.length === 0) {
       return (
@@ -99,7 +65,7 @@ export default function DataListScreen({ route, navigation }: any) {
       <SafeAreaView style={styles.containerList}>
         <FlatList
           data={data}
-          renderItem={({ item }) => <Item item={item} />}
+          renderItem={({ item }) => <DataListItem item={item} navigation={navigation} />}
           keyExtractor={(item) => item.id}
         />
       </SafeAreaView>

@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation }: any) {
     },
   ];
 
-  function navigateToDataList(item: MenuInterface) {
+  function navigateToDataList(item: MenuInterface) {   
     dispatch(setMenuId(item.id));
     navigation.navigate(item.redirectLink, {menuId: item.id})
   }

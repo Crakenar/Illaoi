@@ -12,7 +12,9 @@ import {
 import React, { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { Ionicons, FontAwesome, Entypo } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
 
+//Services
 import {
   _retrieveData,
   _deleteData,
@@ -23,8 +25,13 @@ import {
 import ButtonIL from "../components/Atoms/ButtonIL";
 import TextIL from "../components/Atoms/TextIL";
 import DataListItem from "../components/Organism/DataListItem";
+import { setActionTypeId, setMenuId } from "../redux/storeSlice";
+
+//Enums
+import { ActionTypeId, MenuIds } from "../enums/GlobalEnums";
 
 export default function DataListScreen({ route, navigation }: any) {
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
   const { menuId } = route.params;
@@ -48,15 +55,18 @@ export default function DataListScreen({ route, navigation }: any) {
     }
   }, [isFocused]);
 
+  const redirectToForm = function () {
+      dispatch(setActionTypeId(ActionTypeId.ADD));
+      navigation.navigate("AddingForm");
+  };
+
   function renderDataList() {
     if (data.length === 0) {
       return (
         <View>
           <ButtonIL
             text="Ajouter une donnee"
-            onPressCallback={() =>
-              navigation.navigate("AddingForm", { menuId: menuId })
-            }
+            onPressCallback={redirectToForm}
           />
         </View>
       );

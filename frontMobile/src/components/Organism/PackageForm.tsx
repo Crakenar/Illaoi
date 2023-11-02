@@ -22,7 +22,7 @@ export default function PackageForm({ route, navigation, item }: any) {
       setLabel(item.label);
     }
     if (actionTypeId === ActionTypeId.DETAILS) {
-      setEditable(true);
+      setEditable(false);
     }
   }, [])
 

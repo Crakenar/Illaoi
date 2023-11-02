@@ -14,11 +14,10 @@ import { setActionTypeId } from "../../redux/storeSlice";
 import { ActionTypeId } from "../../enums/GlobalEnums";
 export default function DataListItem(props: any) {
   const dispatch = useDispatch();
-
-  const deleteData = async (item: any) => {
-    const menuId = useSelector((state: any) => {
-      return state.store.menuId;
-    });
+  const menuId = useSelector((state: any) => {
+    return state.store.menuId;
+  });
+  const deleteData = async (item: any) => {    
     const res = await _deleteData(menuId, { id: item.id });
     if (!res) {
       Alert.alert("Error", "Failed to delete data");

@@ -5,6 +5,8 @@ node_modules/
 android/
 ios/
 
+supabase/.temp
+
 # Expo
 .expo/
 dist/

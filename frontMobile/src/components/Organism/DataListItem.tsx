@@ -10,7 +10,8 @@ import { Ionicons, FontAwesome, Entypo } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import { _deleteData } from "../../services/DatabaseService";
-import { setActionType } from "../../redux/storeSlice";
+import { setActionTypeId } from "../../redux/storeSlice";
+import { ActionTypeId } from "../../enums/GlobalEnums";
 export default function DataListItem(props: any) {
   const dispatch = useDispatch();
 
@@ -25,7 +26,7 @@ export default function DataListItem(props: any) {
   };
 
   const goToDetails = () => {
-    dispatch(setActionType("EDIT"))
+    dispatch(setActionTypeId(ActionTypeId.DETAILS));
     props.navigation.navigate("AddingForm", { item: props.item });
   };
 

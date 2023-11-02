@@ -16,8 +16,9 @@ import ButtonIL from "../../components/Atoms/ButtonIL";
 import RegisterScreen from "../../pages/RegisterScreen";
 
 //Store
-import { MenuIds } from "../../enums/GlobalEnums";
-import { setActionType } from "../../redux/storeSlice";
+import { ActionTypeId, MenuIds } from "../../enums/GlobalEnums";
+import { setActionTypeId } from "../../redux/storeSlice";
+import { getActionTypeLabel } from "../../helpers/EnumsHelper";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +29,8 @@ export default function AppComponent() {
     return state.store.menuId;
   });
 
-  const actionType = useSelector((state: any) => {
-    return state.store.actionType;
+  const actionTypeId = useSelector((state: any) => {
+    return state.store.actionTypeId;
   });
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function AppComponent() {
   };
   const redirectToForm = function (navigation: any) {
     if (session?.user && menuId) {
-      dispatch(setActionType("ADD"));
+      dispatch(setActionTypeId(ActionTypeId.ADD));
       navigation.navigate("AddingForm");
     }
   };
@@ -64,7 +65,7 @@ export default function AppComponent() {
   };
 
   const renderingActionType = () => {
-    return actionType;
+    return getActionTypeLabel(actionTypeId);
   };
 
   return (

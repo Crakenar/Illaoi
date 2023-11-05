@@ -2,7 +2,7 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DropDownPicker from "react-native-dropdown-picker";
-import DragList, { DragListRenderItemInfo } from "react-native-draglist";
+import { DragListRenderItemInfo } from "react-native-draglist";
 
 //Services
 import {
@@ -23,6 +23,7 @@ import TextInputIL from "../Atoms/TextInputIL";
 import ButtonIL from "../Atoms/ButtonIL";
 //Enums
 import { ActionTypeId, MenuIds } from "../../enums/GlobalEnums";
+import AdressesCommonForm from "./AdressesCommonForm";
 
 export default function AdressesForm({ route, navigation, item }: any) {
   //States
@@ -78,7 +79,6 @@ export default function AdressesForm({ route, navigation, item }: any) {
       });
       navigation.navigate("DataList", { menuId: MenuIds.Adresses });
     } else if (actionTypeId === ActionTypeId.EDIT) {
-      
       const resStore = await _updateData(MenuIds.Adresses, {
         label: label,
         id: item.id,
@@ -128,107 +128,65 @@ export default function AdressesForm({ route, navigation, item }: any) {
 
   function renderAddForm() {
     return (
-      <>
-        <TextInputIL
-          placeholder="Enter label"
-          value={label}
-          editable={editable}
-          onChangeTextCallback={(text) => setLabel(text)}
-        />
-        <DropDownPicker
-          loading={loadingPackages}
-          schema={{
-            label: "label",
-            value: "id",
-          }}
-          modalProps={{
-            animationType: "fade",
-          }}
-          modalContentContainerStyle={{
-            backgroundColor: "#fff",
-          }}
-          searchable={false}
-          modalTitle="Select multiple packages to add"
-          multiple={true}
-          open={open}
-          value={value}
-          min={0}
-          items={packages}
-          placeholder="Add Packages"
-          setOpen={setOpen}
-          setValue={setValue}
-          // setItems={setSelectedAdresses}
-          onSelectItem={(items: any) => {
-            setSelectedPackages(items);
-          }}
-        />
-      </>
+      <AdressesCommonForm
+        label={label}
+        items={packages}
+        editable={editable}
+        loading={loadingPackages}
+        value={value}
+        open={open}
+        setLabel={setLabel}
+        setValue={setValue}
+        setOpen={setOpen}
+        onSelectItemCallback={onSelectItemCallbackAddForm}
+      />
     );
+  }
+
+  function onSelectItemCallbackEditForm(item: any) {
+    setSelectedPackages(item);
+    const mergedArray = [...new Set([...dataFromDatabase, ...item])];
+    setDragListData(mergedArray);
+  }
+
+  function onSelectItemCallbackAddForm(item: any) {
+    setSelectedPackages(item);
   }
 
   function renderEditForm() {
     return (
-      <>
-        <TextInputIL
-          placeholder="Enter label"
-          value={label}
-          editable={editable}
-          onChangeTextCallback={(text) => setLabel(text)}
-        />
-        <DropDownPicker
-          loading={loadingPackages}
-          schema={{
-            label: "label",
-            value: "id",
-          }}
-          modalProps={{
-            animationType: "fade",
-          }}
-          modalContentContainerStyle={{
-            backgroundColor: "#fff",
-          }}
-          searchable={false}
-          modalTitle="Select multiple packages to add"
-          multiple={true}
-          open={open}
-          value={value}
-          min={0}
-          items={packages}
-          placeholder="Add Packages"
-          setOpen={setOpen}
-          setValue={setValue}
-          onSelectItem={(item: any) => {
-            setSelectedPackages(item);
-            const mergedArray = [...new Set([...dataFromDatabase, ...item])];
-            setDragListData(mergedArray);
-          }}
-        />
-        <DragList
-          data={dragListData}
-          keyExtractor={keyExtractor}
-          onReordered={onReordered}
-          renderItem={renderItem}
-        />
-      </>
+      <AdressesCommonForm
+        label={label}
+        items={packages}
+        editable={editable}
+        dragListData={dragListData}
+        loading={loadingPackages}
+        value={value}
+        open={open}
+        setLabel={setLabel}
+        setOpen={setOpen}
+        setValue={setValue}
+        renderItem={renderItem}
+        onReordered={onReordered}
+        keyExtractor={keyExtractor}
+        onSelectItemCallback={onSelectItemCallbackEditForm}
+      />
     );
   }
 
   function renderDetailForm() {
     return (
-      <>
-        <TextInputIL
-          placeholder="Enter label"
-          value={label}
-          editable={editable}
-          onChangeTextCallback={(text) => setLabel(text)}
-        />
-        <DragList
-          data={dragListData}
-          keyExtractor={keyExtractor}
-          onReordered={onReordered}
-          renderItem={renderItem}
-        />
-      </>
+      <AdressesCommonForm
+        label={label}
+        items={packages}
+        editable={editable}
+        dragListData={dragListData}
+        open={open}
+        setLabel={setLabel}
+        renderItem={renderItem}
+        onReordered={onReordered}
+        keyExtractor={keyExtractor}
+      />
     );
   }
 

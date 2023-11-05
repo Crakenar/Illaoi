@@ -19,7 +19,6 @@ import {
   transformDataForDropdownList,
 } from "../../helpers/ListHelper";
 //Components
-import TextInputIL from "../Atoms/TextInputIL";
 import ButtonIL from "../Atoms/ButtonIL";
 //Enums
 import { ActionTypeId, MenuIds } from "../../enums/GlobalEnums";
@@ -126,6 +125,17 @@ export default function AdressesForm({ route, navigation, item }: any) {
     setDragListData(copy);
   }
 
+  
+  function onSelectItemCallbackEditForm(item: any) {
+    setSelectedPackages(item);
+    const mergedArray = [...new Set([...dataFromDatabase, ...item])];
+    setDragListData(mergedArray);
+  }
+
+  function onSelectItemCallbackAddForm(item: any) {
+    setSelectedPackages(item);
+  }
+
   function renderAddForm() {
     return (
       <AdressesCommonForm
@@ -141,16 +151,6 @@ export default function AdressesForm({ route, navigation, item }: any) {
         onSelectItemCallback={onSelectItemCallbackAddForm}
       />
     );
-  }
-
-  function onSelectItemCallbackEditForm(item: any) {
-    setSelectedPackages(item);
-    const mergedArray = [...new Set([...dataFromDatabase, ...item])];
-    setDragListData(mergedArray);
-  }
-
-  function onSelectItemCallbackAddForm(item: any) {
-    setSelectedPackages(item);
   }
 
   function renderEditForm() {

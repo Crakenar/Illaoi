@@ -7,51 +7,67 @@ import DragList, { DragListRenderItemInfo } from "react-native-draglist";
 //Services
 import {
   _retrieveData,
+  _retrieveDataNotAssigned,
   _storeData,
   _updateData,
 } from "../../services/DatabaseService";
 //Helpers
-import { jsonStringToArray, transformDataForDropdownList } from "../../helpers/ListHelper";
+import {
+  getIdsFromArray,
+  idExistInArray,
+  jsonStringToArray,
+  transformDataForDropdownList,
+} from "../../helpers/ListHelper";
 //Components
 import TextInputIL from "../Atoms/TextInputIL";
 import ButtonIL from "../Atoms/ButtonIL";
 //Enums
 import { ActionTypeId, MenuIds } from "../../enums/GlobalEnums";
-const SOUND_OF_SILENCE = ["hello", "darkness", "my", "old", "friend"];
 
 export default function AdressesForm({ route, navigation, item }: any) {
   //States
   const [label, setLabel] = useState<string>("");
   const [editable, setEditable] = useState<boolean>(true);
-  const [data, setData] = useState<any>([]);
+  const [dataFromDatabase, setDataFromDatabase] = useState<any>([]);
+  const [dragListData, setDragListData] = useState<any>([]);
 
   //dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [packages, setPackages] = useState<any>([]);
   const [selectedPackages, setSelectedPackages] = useState<any>(null);
+  const [loadingPackages, setLoadingPackages] = useState<boolean>(true);
   const actionTypeId = useSelector((state: any) => {
     return state.store.actionTypeId;
   });
   //onmounted
   useEffect(() => {
-    if (actionTypeId !== ActionTypeId.ADD) {
-      setLabel(item.label);
-    }
+    DropDownPicker.setListMode("MODAL");
+
     if (actionTypeId === ActionTypeId.ADD) {
-      getPackages();
+      getPackages([]);
+    }
+    if (actionTypeId === ActionTypeId.EDIT) {
+      const listPackages = jsonStringToArray(item.packages);
+      setDataFromDatabase(listPackages);
+      setDragListData(listPackages);
+      const ids = getIdsFromArray(listPackages);
+      getPackages(ids);
+      setLabel(item?.label);
     }
     if (actionTypeId === ActionTypeId.DETAILS) {
-      setEditable(false);
       const listPackages = jsonStringToArray(item.packages);
-      setData(listPackages);
+      setEditable(false);
+      setDragListData(listPackages);
+      setLabel(item?.label);
     }
   }, []);
 
-  const getPackages = async () => {
-    const packages = await _retrieveData(MenuIds.Package);
+  const getPackages = async (ids: number[]) => {
+    const packages = await _retrieveDataNotAssigned(MenuIds.Package, ids);
     const listTransormed = transformDataForDropdownList(packages);
     setPackages(listTransormed);
+    setLoadingPackages(false);
   };
 
   const handleSubmit = async () => {
@@ -62,9 +78,11 @@ export default function AdressesForm({ route, navigation, item }: any) {
       });
       navigation.navigate("DataList", { menuId: MenuIds.Adresses });
     } else if (actionTypeId === ActionTypeId.EDIT) {
+      
       const resStore = await _updateData(MenuIds.Adresses, {
         label: label,
         id: item.id,
+        packages: dragListData,
       });
       navigation.navigate("DataList", { menuId: MenuIds.Adresses });
     }
@@ -102,63 +120,142 @@ export default function AdressesForm({ route, navigation, item }: any) {
   }
 
   async function onReordered(fromIndex: number, toIndex: number) {
-    const copy = [...data]; // Don't modify react data in-place
+    const copy = [...dragListData]; // Don't modify react data in-place
     const removed = copy.splice(fromIndex, 1);
     copy.splice(toIndex, 0, removed[0]); // Now insert at the new pos
-    setData(copy);
+    setDragListData(copy);
+  }
+
+  function renderAddForm() {
+    return (
+      <>
+        <TextInputIL
+          placeholder="Enter label"
+          value={label}
+          editable={editable}
+          onChangeTextCallback={(text) => setLabel(text)}
+        />
+        <DropDownPicker
+          loading={loadingPackages}
+          schema={{
+            label: "label",
+            value: "id",
+          }}
+          modalProps={{
+            animationType: "fade",
+          }}
+          modalContentContainerStyle={{
+            backgroundColor: "#fff",
+          }}
+          searchable={false}
+          modalTitle="Select multiple packages to add"
+          multiple={true}
+          open={open}
+          value={value}
+          min={0}
+          items={packages}
+          placeholder="Add Packages"
+          setOpen={setOpen}
+          setValue={setValue}
+          // setItems={setSelectedAdresses}
+          onSelectItem={(items: any) => {
+            setSelectedPackages(items);
+          }}
+        />
+      </>
+    );
+  }
+
+  function renderEditForm() {
+    return (
+      <>
+        <TextInputIL
+          placeholder="Enter label"
+          value={label}
+          editable={editable}
+          onChangeTextCallback={(text) => setLabel(text)}
+        />
+        <DropDownPicker
+          loading={loadingPackages}
+          schema={{
+            label: "label",
+            value: "id",
+          }}
+          modalProps={{
+            animationType: "fade",
+          }}
+          modalContentContainerStyle={{
+            backgroundColor: "#fff",
+          }}
+          searchable={false}
+          modalTitle="Select multiple packages to add"
+          multiple={true}
+          open={open}
+          value={value}
+          min={0}
+          items={packages}
+          placeholder="Add Packages"
+          setOpen={setOpen}
+          setValue={setValue}
+          onSelectItem={(item: any) => {
+            setSelectedPackages(item);
+            const mergedArray = [...new Set([...dataFromDatabase, ...item])];
+            setDragListData(mergedArray);
+          }}
+        />
+        <DragList
+          data={dragListData}
+          keyExtractor={keyExtractor}
+          onReordered={onReordered}
+          renderItem={renderItem}
+        />
+      </>
+    );
+  }
+
+  function renderDetailForm() {
+    return (
+      <>
+        <TextInputIL
+          placeholder="Enter label"
+          value={label}
+          editable={editable}
+          onChangeTextCallback={(text) => setLabel(text)}
+        />
+        <DragList
+          data={dragListData}
+          keyExtractor={keyExtractor}
+          onReordered={onReordered}
+          renderItem={renderItem}
+        />
+      </>
+    );
+  }
+
+  function renderScreen() {
+    if (actionTypeId === ActionTypeId.ADD) {
+      return renderAddForm();
+    } else if (actionTypeId === ActionTypeId.EDIT) {
+      return renderEditForm();
+    } else if (actionTypeId === ActionTypeId.DETAILS) {
+      return renderDetailForm();
+    }
   }
 
   return (
-    <View  style={styles.container}>
-      <TextInputIL
-        placeholder="Enter label"
-        value={label}
-        editable={editable}
-        onChangeTextCallback={(text) => setLabel(text)}
-      />
-      {editable ? (
-        <DropDownPicker
-        schema={{
-          label: "label",
-          value: "id",
-        }}
-        modalProps={{
-          animationType: "fade"
-        }}
-        multiple={true}
-        open={open}
-        value={value}
-        min={0}
-        items={packages}
-        placeholder="Select Packages"
-        setOpen={setOpen}
-        setValue={setValue}
-        // setItems={setSelectedAdresses}
-        onSelectItem={(items: any) => {
-          setSelectedPackages(items);
-        }}
-      />
-      ) : (
-        <DragList
-        data={data}
-        keyExtractor={keyExtractor}
-        onReordered={onReordered}
-        renderItem={renderItem}
-      />
-      )}
+    <View style={styles.container}>
+      {renderScreen()}
       {renderSubmitButton()}
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   buttonContainer: {
-    width: '80%',
-    alignItems: 'center', // Centrage horizontal du bouton
-    backgroundColor: '#0174BE', // Couleur de fond du bouton
+    width: "80%",
+    alignItems: "center", // Centrage horizontal du bouton
+    backgroundColor: "#0174BE", // Couleur de fond du bouton
     padding: 20, // Marge intérieure du bouton
     marginBottom: 10,
     borderRadius: 10, // Coins arrondis

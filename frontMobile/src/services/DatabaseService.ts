@@ -11,25 +11,25 @@ export async function _retrieveData(menuId: MenuIds) {
       .from(tableName)
       .select()
       .eq("user_id", user?.id); //not needed bc of the rules in the supabase db but we never know
+      
     if (error) {
       console.error(error);
-    }    
+    }
     return dataList ?? [];
   } catch (error) {
     // Error retrieving data
     console.log(error);
     return [];
-    
   }
 }
 
 export async function _updateData(menuId: MenuIds, data: any) {
   try {
-    const tableName = getTableNameFromMenuId(menuId);    
+    const tableName = getTableNameFromMenuId(menuId);
     const { error } = await supabase
       .from(tableName)
       .update(data)
-      .match({"id": data.id});
+      .match({ id: data.id });
     if (error) {
       console.error(error);
       return false;
@@ -61,7 +61,10 @@ export async function _storeData(menuId: MenuIds, data: any) {
 export async function _deleteData(menuId: MenuIds, data: any) {
   try {
     const tableName = getTableNameFromMenuId(menuId);
-    const { error } = await supabase.from(tableName).delete().match({"id": data.id});
+    const { error } = await supabase
+      .from(tableName)
+      .delete()
+      .match({ id: data.id });
     if (error) {
       console.error(error);
       return false;
@@ -84,5 +87,23 @@ export function getTableNameFromMenuId(menuId: MenuIds): string {
       return TableNamesEnum.Tour;
     default:
       return ""; // Handle cases where the menuId is not found
+  }
+}
+
+export async function _retrieveDataNotAssigned(menuId: MenuIds, ids: number[]) {
+  const { data } = await supabase.auth.refreshSession();
+  const { user } = data;
+  try {
+    const tableName = getTableNameFromMenuId(menuId);
+    const { data: dataList, error } = await supabase.from(tableName).select().not('id', 'in', `(${ids})`);
+        
+    if (error) {
+      console.error(error);
+    }
+    return dataList ?? [];
+  } catch (error) {
+    // Error retrieving data
+    console.log(error);
+    return [];
   }
 }

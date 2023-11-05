@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "quentinPackageProject",
-    "slug": "quentinPackageProject",
+    "slug": "illaoi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "da6c709c-e90d-4ae6-8fe0-a50113886e71"
+      }
+    },
+    "owner": "crakenar"
   }
 }

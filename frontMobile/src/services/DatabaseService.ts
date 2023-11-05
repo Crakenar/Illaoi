@@ -13,11 +13,13 @@ export async function _retrieveData(menuId: MenuIds) {
       .eq("user_id", user?.id); //not needed bc of the rules in the supabase db but we never know
     if (error) {
       console.error(error);
-    }
-    
+    }    
     return dataList ?? [];
   } catch (error) {
     // Error retrieving data
+    console.log(error);
+    return [];
+    
   }
 }
 

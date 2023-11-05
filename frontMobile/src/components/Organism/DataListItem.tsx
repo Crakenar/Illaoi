@@ -17,7 +17,7 @@ export default function DataListItem(props: any) {
   const menuId = useSelector((state: any) => {
     return state.store.menuId;
   });
-  const deleteData = async (item: any) => {    
+  const deleteData = async (item: any) => {
     const res = await _deleteData(menuId, { id: item.id });
     if (!res) {
       Alert.alert("Error", "Failed to delete data");
@@ -32,7 +32,7 @@ export default function DataListItem(props: any) {
   const goToEdit = () => {
     dispatch(setActionTypeId(ActionTypeId.EDIT));
     props.navigation.navigate("AddingForm", { item: props.item });
-  }
+  };
 
   return (
     <View style={styles.listItem}>
@@ -61,7 +61,7 @@ export default function DataListItem(props: any) {
         }}
       >
         <FontAwesome
-        onPress={goToEdit}
+          onPress={goToEdit}
           name="pencil-square"
           size={24}
           color="black"

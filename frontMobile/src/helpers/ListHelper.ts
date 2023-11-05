@@ -6,3 +6,7 @@ export function transformDataForDropdownList(data: any[]) {
     }
   })
 }
+
+export function jsonStringToArray(jsonStringArray: Array<string>) {
+  return jsonStringArray.map(str=> JSON.parse(str));
+}
